@@ -1,4 +1,4 @@
-## Data collection
+# Data collection
 
 This directory contains files relevant to collecting eBay auction data. The strategy was as follows:
 
@@ -6,7 +6,7 @@ This directory contains files relevant to collecting eBay auction data. The stra
 - Using these titles, similar listings from other sellers on eBay are identified;
 - Attributes of each listing are collected by both automatic and manual means.
 
-Due to the timely nature of eBay auctions, it is not possible to replicate exact datasets. Nonetheless, the following steps do outline the process of collecting new data in the same fashion:
+Due to the timely nature of eBay auctions, it is not possible to replicate exact datasets. Nonetheless, the following steps can be followed to collect new data in the same fashion:
 
 1. Delete ```listings.db```, ```matchedauctions.txt```, and ```policeauctions.txt```.
 2. Load a suitably configured Python environment with ```selenium``` and ```sqlite3``` installed.
