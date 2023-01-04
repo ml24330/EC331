@@ -4,26 +4,22 @@ from selenium.webdriver.common.by import By
 import re
 
 
-# eBay search page URL, filtering only completed auctions
-
+# URL of eBay search page that filters only completed auctions
 URL = "https://www.ebay.co.uk/sch/i.html?_nkw=test&_in_kw=1&_ex_kw=&_sacat=0&LH_Complete=1&_udlo=&_udhi=&LH_Auction=1&_samilow=&_samihi=&_sadis=15&_stpos=EC4Y0DF&_sargn=-1%26saslc%3D1&_salic=3&_sop=12&_dmd=1&_ipg=60"
 
 
 # Instantiate a chrome driver
-
 chrome_options = Options()
 chrome_options.headless = True
 driver = webdriver.Chrome(options=chrome_options)
 
 
 # Get all relevant titles of police auctions
-
 with open("policeauctions.txt", "r") as f:
     KEYWORDS = [line[:-1] for line in f]
 
 
 # For each title, record all relevant listings from other accounts suggested by eBay
-
 for keyword in KEYWORDS:
     driver.get(URL)
 
@@ -39,12 +35,13 @@ for keyword in KEYWORDS:
         for el in title_els[1:]:
             f.write(f'{el.get_attribute("href")}\n')
 
+
+# Close the driver
 driver.close()
 
 
-# Remove duplicated listings
+# Remove any duplicated listings
 with open("matchedauctions.txt", "r") as f:
-    
     ids = []
     lines = []
     exp = "(?<=itm\/)(.*?)(?=\?)"

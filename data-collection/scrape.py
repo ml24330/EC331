@@ -8,7 +8,8 @@ import re
 with open("matchedauctions.txt", "r") as f:
     URLS = [line[:-1] for line in f]
 
-# Regex to obtain item ID from URL
+
+# Create a regex to match item ID from URL
 exp = "(?<=itm\/)(.*?)(?=\?)"
 
 
@@ -34,7 +35,6 @@ for idx, url in enumerate(URLS):
         price = price_el.get_attribute("innerText")
     except:
         price = -1
-
 
     # Get the condition
     try:
@@ -71,8 +71,7 @@ for idx, url in enumerate(URLS):
     except:
         endtime = -1
 
-    driver.quit()
-
+    driver.close()
 
     # If a value is undefined, do not insert (this means the seller has hidden details of the listing)
     if endtime != -1:

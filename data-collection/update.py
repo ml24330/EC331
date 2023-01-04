@@ -5,43 +5,45 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
+
+# Instantiate a Chrome driver
 chrome_options = Options()
 chrome_options.headless = False
 driver = webdriver.Chrome(options=chrome_options)
 
-# Get all unfilled listings already in database
+
+# Get all unfilled listings in database
 listings = QueryEmpty()
 print(f'Listings to fill in: {len(listings)}')
+
 
 # Columns that need to be manually filled in
 COLS = ["brand", "model", "screenSize", "storage", "returnsAccepted", "returnsDays",
      "ram", "resolution", "quantity"]
 
+
 # For each listing, manually populate details of its specifications
 for listing in listings:
-
-    print(listing)
-
     dict_ = dict()
 
     url = listing[4]
     driver.get(url)
 
+    # Define a prompt function that can be recursively called
     def prompt(label, id):
         col_res = input(f'{col}: ')
 
-        # If the input is "NO" at any point, discard the listing
+        # If the input is "NO", ignore the listing for later
         if col_res == 'NO':
             raise Exception('listing ignored for now')
-        # Raise the prompt again until there is valid input
-        elif col_res == '':
-            prompt(label, id)
+        # If the input is "DISCARD", delete the listing
         elif col_res == 'DISCARD':
             ClearOne(id)
             raise Exception('listing deleted')
-
+        # Raise the prompt again until there is valid input
+        elif col_res == '':
+            prompt(label, id)
         return col_res
-
 
     # Collect data for each unfilled column
     for col in COLS:
@@ -50,7 +52,6 @@ for listing in listings:
         except Exception as e:
             print(e)
             break
-            
 
     # Once navigated to bids page, automatically collect every unique bidder's highest bid
     else:
@@ -69,7 +70,6 @@ for listing in listings:
 
             dict_["bids"] = f'{bids}'
 
-            print(dict_)
             UpdateItem(listing[0], dict_) 
         except Exception as e:
             print(e)
@@ -78,8 +78,8 @@ for listing in listings:
 
             dict_["bids"] = f'{[bid]}'
 
-            print(dict_)
             UpdateItem(listing[0], dict_) 
         
         
+# Close the driver
 driver.close()
