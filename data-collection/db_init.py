@@ -8,9 +8,6 @@ try:
     c.execute(f"""
         CREATE TABLE listings (
         id integer,
-        title text,
-        globalId text,
-        categoryId integer,
         url text,
         location text,
         brand text,
@@ -23,17 +20,17 @@ try:
         returnsAccepted integer,
         returnsDays integer,
         condition text,
-        sellerItemsSold integer,
         sellerFeedbackScore integer,
         sellerPositivePercent real,
         sellerName text,
-        sellerPositive integer,
-        sellerNegative integer,
         price real,
         bids text,
         ram text,
         resolution text,
+        sellerPositive integer,
+        sellerNegative integer,
         quantity integer,
+        sellerItemsSold integer,
         UNIQUE(id)
     )""")
 
