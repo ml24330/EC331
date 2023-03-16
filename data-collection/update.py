@@ -18,15 +18,14 @@ print(f'Listings to fill in: {len(listings)}')
 
 
 # Columns that need to be manually filled in
-COLS = ["brand", "model", "screenSize", "storage", "returnsAccepted", "returnsDays",
-     "ram", "resolution", "quantity"]
+COLS = ["brand", "model", "screenSize", "storage", "returnsAccepted", "returnsDays", "quantity"]
 
 
 # For each listing, manually populate details of its specifications
 for listing in listings:
     dict_ = dict()
 
-    url = listing[4]
+    url = listing[1]
     driver.get(url)
 
     # Define a prompt function that can be recursively called
@@ -57,7 +56,7 @@ for listing in listings:
     else:
         try:
             l = driver.find_element(By.CSS_SELECTOR, "#vi-VR-bid-lnk-")
-            elements = WebDriverWait(driver, 30).until(
+            elements = WebDriverWait(driver, 300).until(
                 EC.presence_of_all_elements_located((By.CSS_SELECTOR, "tr > td:first-child > .textual-display-item > span > span:first-child"))
             )
             bidders = [el.get_attribute("innerText").replace('Highest bidder\n', '') for el in elements]

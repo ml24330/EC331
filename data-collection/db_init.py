@@ -31,6 +31,7 @@ try:
         sellerNegative integer,
         quantity integer,
         sellerItemsSold integer,
+        sellerRecordedFeedback integer,
         UNIQUE(id)
     )""")
 

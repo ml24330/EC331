@@ -14,11 +14,11 @@ driver = webdriver.Chrome(options=chrome_options)
 
 
 # Get all listings where seller attributes have not been filled in
-listings = Query("SELECT * FROM listings WHERE sellerItemsSold is null")
+listings = Query("SELECT * FROM listings WHERE sellerItemsSold is null and sellerName != 'victoriabishop25'")
 
 
 # Create a collection of unique sellers
-sellers = set([listing[-9] for listing in listings])
+sellers = set([listing[-10] for listing in listings])
 dict_ = {}
 
 
@@ -46,6 +46,14 @@ for idx, seller in enumerate(sellers):
     except:
         total = -1
 
+    # Get the number of recorded feedbacks, for imputing positive feedback when it is missing
+    
+    try:
+        recorded_el = driver.find_element(By.CSS_SELECTOR, ".fdbk-detail-list__title > .SECONDARY")
+        recorded = re.search("(?<=\()[0-9,]+(?=\))", recorded_el.get_attribute("innerText")).group(0)
+    except:
+        recorded = 0
+
     # Get the number of positive feedbacks in the last 12 months
     positive_el = driver.find_element(By.CSS_SELECTOR, ".fdbk-overall-rating__details > div:nth-child(1) > a > span")
     positive = positive_el.get_attribute("innerText")
@@ -59,7 +67,7 @@ for idx, seller in enumerate(sellers):
     negative = negative_el.get_attribute("innerText")
 
     # Create a key-value pair matching the seller to their feedback profile
-    dict_[seller] = [sold, percent, positive, int(neutral.replace(",",""))+int(negative.replace(",","")), total]
+    dict_[seller] = [sold, percent, positive, int(neutral.replace(",",""))+int(negative.replace(",","")), total, recorded]
 
     print(f"{idx+1}/{len(sellers)} processed")
 
@@ -68,13 +76,14 @@ for idx, seller in enumerate(sellers):
 for listing in listings:
     try:
         id = listing[0]
-        seller = listing[-9]
+        seller = listing[-10]
         params = {
             "sellerItemsSold": dict_[seller][0],
             "sellerPositivePercent": dict_[seller][1],
             "sellerPositive": dict_[seller][2],
             "sellerNegative": dict_[seller][3],
-            "sellerFeedbackScore": dict_[seller][4]
+            "sellerFeedbackScore": dict_[seller][4],
+            "sellerRecordedFeedback": dict_[seller][5]
         }
         UpdateItem(id, params)
         print(f"updated seller {seller}: {dict_[seller]}")

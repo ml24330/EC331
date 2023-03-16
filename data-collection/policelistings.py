@@ -33,3 +33,20 @@ with open('policeauctions.txt', 'a') as f:
 
 # Close the driver
 driver.close()
+
+
+# Remove any duplicated listings
+with open("policeauctions.txt", "r") as f:
+    seen = []
+    lines = []
+
+    for line in f:
+        if line not in seen:
+            lines.append(line)
+            seen.append(line)
+        else:
+            print(f'removing {line}')
+
+with open("policeauctions.txt", "w") as f:
+    for line in lines:
+        f.write(line)
