@@ -1,4 +1,5 @@
 from scipy import optimize
+import numpy as np
 from random import choices
 from copy import deepcopy
 from .median import *
@@ -36,9 +37,9 @@ def get_loss_function(covariates, upper_dict, lower_dict, cef):
 
 
 
-def get_estimates(loss_function, n_cov):
+def get_estimates(loss_function, n_cov, x0):
                 
-    b_hat = optimize.minimize(loss_function, [0]*n_cov).x
+    b_hat = optimize.minimize(loss_function, x0).x
     
     estimates = []
 
@@ -84,7 +85,7 @@ def bootstrap(bids, covariates, incremented, n_covs, cefs, repetition, name):
 
             median_upper, median_lower = estimate_median(_bids, _covariates, _incremented, (-4,6))
 
-            dump(median_lower, median_upper, f"bootstrap_{name}_{i}")
+            dump(_covariates, median_lower, median_upper, f"bootstrap_{name}_{i}")
 
             results = []
 
@@ -126,7 +127,7 @@ def bootstrap2(bids, covariates, incremented, _range, n_covs, cefs, repetition, 
 
             median_upper, median_lower = estimate_median(_bids, _covariates, _incremented, _range)
 
-            dump(median_lower, median_upper, f"bootstrap_{name}_{i}")
+            dump(_covariates, median_lower, median_upper, f"bootstrap_{name}_{i}")
 
             results = []
 
@@ -147,3 +148,21 @@ def bootstrap2(bids, covariates, incremented, _range, n_covs, cefs, repetition, 
 
 
     return (estimated_intervals)
+
+
+def report_intervals(estimates, cv):
+
+    conf_intervals = []
+
+    n_cov = len(estimates[0])
+
+    for i in range(int(n_cov/2)):
+
+        lower = [e[2*i+0] for e in estimates]
+        upper = [e[2*i+1] for e in estimates]
+
+        print(f"{cv}% confidence interval for variable {i}:")
+        print(f"[{np.percentile(lower, (100-cv)/2)}, {np.percentile(upper, 100-(100-cv)/2)}]")
+        conf_intervals.append([np.percentile(lower, (100-cv)/2), np.percentile(upper, 100-(100-cv)/2)])
+
+    return conf_intervals
