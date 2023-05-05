@@ -38,7 +38,7 @@ Detailed instructions on doing this is provided in the `README.md` file in the `
 4. Navigate to `/estimation`.
 5. Run `main.py` in Python. (>50h)
 
-This populates the `/estimation/dumps` folder with estimated results of conditional upper and lower bounds, which should be the same as the `/output/final dumps` folder. Power analysis results will also be stored in this folder, and should be qualitatively similar to what is inside the `output/power dumps` folder.
+This populates the `/estimation/dumps` folder with estimated results of conditional upper and lower bounds, which should be the same as the `/output/final dumps` folder. Power analysis results will also be stored in this folder, and should be qualitatively similar to what is inside the `/output/power dumps` folder.
 
 
 #### Replication of Outputs and Figures
