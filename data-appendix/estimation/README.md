@@ -6,3 +6,4 @@
 - `s_CMF.py` estimates bounds using synthetic data and seller feedback score as the reputation variable.
 - `simulate.py` generates synthetic police auction data.
 - `power.py` simulates auctions and estimates bounds associated with different levels of sample sizes.
+- `main.py` runs all files in this directory in sequence.
