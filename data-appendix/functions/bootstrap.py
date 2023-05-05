@@ -59,15 +59,35 @@ def get_estimates(loss_function, n_cov, x0):
     return (b_hat, estimates)
 
 
+def get_estimates2(loss_function, n_cov, x0, e):
+                
+    b_hat = optimize.minimize(loss_function, x0).x
+    
+    estimates = []
+
+    for j in range(n_cov):
+
+        def obj(b):
+            _b = deepcopy(b_hat)
+            _b[j] = b
+            return loss_function(_b)-loss_function(b_hat)-e
+        
+        interval_lower = optimize.newton(obj, b_hat[j]-5)
+        interval_upper = optimize.newton(obj, b_hat[j]+5)
+
+        estimates.append(interval_lower)
+        estimates.append(interval_upper)
+
+    return (b_hat, estimates)
+
+
 def bootstrap(bids, covariates, incremented, n_covs, cefs, repetition, name):
     
     estimated_intervals = []
     
     data_pairs = [(bid, covariate, increment) for bid, covariate, increment in zip(bids, covariates, incremented)]
 
-    i = 0
-
-    while i < repetition:
+    for i in range(repetition):
         
         resampled = choices(data_pairs, k=len(bids))
         
@@ -101,8 +121,6 @@ def bootstrap(bids, covariates, incremented, n_covs, cefs, repetition, name):
             
             estimated_intervals.append(results)
 
-            i += 1
-
         except Exception as e:
             print(f"An error occurred while calculating intervals on iteration {i}")
             print(e)
@@ -119,9 +137,7 @@ def bootstrap2(bids, covariates, incremented, _range, n_covs, cefs, repetition, 
     
     data_pairs = [(bid, covariate, increment) for bid, covariate, increment in zip(bids, covariates, incremented)]
 
-    i = 0
-
-    while i < repetition:
+    for i in range(repetition):
         
         resampled = choices(data_pairs, k=len(bids))
                 
@@ -146,8 +162,6 @@ def bootstrap2(bids, covariates, incremented, _range, n_covs, cefs, repetition, 
                 results.append(estimates)
             
             estimated_intervals.append(results)
-
-            i += 1
 
         except Exception as e:
             print(f"An error occurred while calculating intervals on iteration {i}")
